@@ -1,0 +1,18 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+
+# 环境配置（含数据库密码与 API Key，禁止提交）
+.env
+
+# 大模型服务商配置（含各平台 API Key，禁止提交）
+providers.json
+
+# 上传的解析文档
+uploads/
+
+# 运行产物
+*.log
+.pytest_cache/

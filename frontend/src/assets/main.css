@@ -1,0 +1,160 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- 基础 ---------- */
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  @apply bg-app-bg text-ink dark:bg-dark-bg dark:text-gray-100 antialiased;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 统一轻量滚动条 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-ink-3/40 rounded-full;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ---------- 通用组件（纯 Tailwind 手写，不引入组件库） ---------- */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded px-3.5 py-2 text-sm font-medium transition-colors duration-200 cursor-pointer select-none disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-primary {
+    @apply btn bg-primary text-white hover:bg-primary-hover;
+  }
+  .btn-ghost {
+    @apply btn text-ink-2 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10;
+  }
+  .btn-text {
+    @apply btn text-primary hover:bg-primary-light dark:hover:bg-primary-dark/20 px-2;
+  }
+  .btn-danger-text {
+    @apply btn text-danger hover:bg-danger/10 px-2;
+  }
+
+  .input {
+    @apply w-full rounded border border-gray-200 bg-white px-3 py-2 text-sm text-ink placeholder:text-ink-3 outline-none transition-colors duration-200 focus:border-primary dark:border-dark-border dark:bg-dark-card dark:text-gray-100;
+  }
+
+  .card {
+    @apply rounded bg-card shadow-soft dark:bg-dark-card;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded px-1.5 py-0.5 text-xs;
+  }
+}
+
+/* ---------- Markdown 渲染（md-body） ---------- */
+.md-body {
+  @apply text-sm leading-relaxed break-words text-ink dark:text-gray-200;
+  word-break: break-word;
+}
+.md-body h1,
+.md-body h2,
+.md-body h3,
+.md-body h4 {
+  @apply font-semibold text-ink dark:text-gray-100 mt-4 mb-2;
+}
+.md-body h1 {
+  font-size: 1.35em;
+}
+.md-body h2 {
+  font-size: 1.2em;
+}
+.md-body h3 {
+  font-size: 1.05em;
+}
+.md-body p {
+  @apply my-2;
+}
+.md-body ul,
+.md-body ol {
+  @apply my-2 pl-5;
+}
+.md-body ul {
+  list-style: disc;
+}
+.md-body ol {
+  list-style: decimal;
+}
+.md-body li {
+  @apply my-0.5;
+}
+.md-body blockquote {
+  @apply border-l-[3px] border-primary/50 bg-primary-light/40 dark:bg-primary-dark/10 px-3 py-1 my-2 rounded-r text-ink-2 dark:text-gray-300;
+}
+.md-body code {
+  @apply bg-black/5 dark:bg-white/10 text-[0.9em] text-primary-dark dark:text-primary px-1 py-0.5 rounded;
+}
+.md-body pre {
+  @apply my-3 rounded bg-[#0d1117] p-3 overflow-x-auto;
+}
+.md-body pre code {
+  @apply bg-transparent p-0 text-gray-200 dark:text-gray-200;
+}
+.md-body table {
+  @apply w-full my-3 text-sm border-collapse;
+}
+.md-body th,
+.md-body td {
+  @apply border border-gray-200 dark:border-dark-border px-2.5 py-1.5 text-left;
+}
+.md-body th {
+  @apply bg-black/5 dark:bg-white/5 font-medium;
+}
+.md-body a {
+  @apply text-primary hover:underline;
+}
+.md-body hr {
+  @apply my-3 border-gray-200 dark:border-dark-border;
+}
+.md-body img {
+  @apply max-w-full rounded my-2;
+}
+
+/* ---------- 代码块头部 ---------- */
+.code-block {
+  @apply relative my-3 rounded overflow-hidden bg-[#0d1117];
+}
+.code-block .code-header {
+  @apply flex items-center justify-between px-3 py-1.5 text-xs text-gray-400 bg-white/5;
+}
+.code-block pre {
+  @apply m-0 p-3 overflow-x-auto;
+}
+
+/* 打字光标动画 */
+.streaming-cursor::after {
+  content: '▍';
+  @apply text-primary animate-pulse ml-0.5;
+}
+
+/* 淡入淡出（200ms，对齐动效规范） */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+/* 拖拽调节栏宽度时禁用过渡，保证实时跟随鼠标 */
+body.resizing aside {
+  transition: none !important;
+}

@@ -1,0 +1,39 @@
+# ---------- 依赖与构建产物 ----------
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.local
+
+# ---------- 环境变量与密钥（禁止提交） ----------
+.env
+.env.*
+!.env.example
+backend/providers.json
+
+# ---------- 后端运行时 ----------
+backend/.venv/
+backend/uploads/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# ---------- 日志 ----------
+*.log
+backend/uvi_out.log
+backend/uvi_err.log
+frontend/vite_out.log
+frontend/build_check.txt
+
+# ---------- 系统 / 编辑器 ----------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ---------- pip / 工具临时残留（勿提交） ----------
+pip-unpack-*/
+/tmp*
+/6t5c_atr
+/_th7v1so
+/a1qb9f3w
+/o1cez6r8
