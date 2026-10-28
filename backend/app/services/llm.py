@@ -80,8 +80,9 @@ async def stream_chat(
         base_url = provider.get("base_url") or settings.LLM_BASE_URL
         api_key = provider.get("api_key", "")
         model = model or provider.get("default_model") or (provider.get("models") or [""])[0]
-        # 本地服务（Ollama/vLLM 等）无需 API Key；云端服务必须配置
-        if not api_key and not is_local_url(base_url):
+        # 本地服务（Ollama/vLLM 等）与"无需 API Key"的自部署服务无需鉴权
+        needs_key = not is_local_url(base_url) and not provider.get("no_auth", False)
+        if not api_key and needs_key:
             raise RuntimeError(
                 f"服务商「{provider.get('name', '未命名')}」尚未配置 API Key，请到设置中添加后再试"
             )

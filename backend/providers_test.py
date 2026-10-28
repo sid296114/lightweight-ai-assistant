@@ -61,10 +61,15 @@ with client.stream(
             evts.append(json.loads(line[6:]))
 report("chat-with-provider-sse", resp.status_code == 200 and len(evts) > 0, f"events={len(evts)} first={evts[0] if evts else None}")
 
-# 6. 对话：指定无 Key 云端服务商 → SSE error 提示配置
+# 6. 对话：指定无 Key 且非免鉴权的云端服务商 → SSE error 提示配置
+r = client.post(f"{BASE}/api/providers", headers=headers, json={
+    "name": "无Key测试", "base_url": "https://api.no-key-test.example.com/v1",
+    "models": ["t1"], "default_model": "t1", "no_auth": False,
+})
+nokey_pid = r.json().get("id", "")
 with client.stream(
     "POST", f"{BASE}/api/chat/stream", headers=headers,
-    json={"content": "hi", "provider_id": "deepseek", "model_name": "deepseek-chat"},
+    json={"content": "hi", "provider_id": nokey_pid, "model_name": "t1"},
 ) as resp:
     evts = []
     for line in resp.iter_lines():
@@ -72,6 +77,7 @@ with client.stream(
             evts.append(json.loads(line[6:]))
     is_err = evts and evts[0].get("type") == "error" and "API Key" in evts[0].get("message", "")
 report("chat-no-key-errors", is_err, str(evts[:1]))
+client.delete(f"{BASE}/api/providers/{nokey_pid}", headers=headers)
 
 # 7. 对话：不指定服务商 → 回退全局 Mock 流式
 with client.stream(

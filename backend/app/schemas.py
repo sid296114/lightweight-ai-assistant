@@ -106,6 +106,7 @@ class ProviderCreate(BaseModel):
     base_url: str = Field(..., min_length=1, max_length=300, description="OpenAI 兼容接口地址，本地模型如 http://127.0.0.1:11434/v1")
     models: list[str] = Field(default_factory=list)
     default_model: str = Field("", max_length=100)
+    no_auth: bool = Field(False, description="该服务无需 API Key（自部署推理，如魔搭/私有 vLLM 等）")
 
 
 class ProviderUpdate(BaseModel):
@@ -113,6 +114,7 @@ class ProviderUpdate(BaseModel):
     base_url: Optional[str] = Field(None, min_length=1, max_length=300)
     models: Optional[list[str]] = None
     default_model: Optional[str] = Field(None, max_length=100)
+    no_auth: Optional[bool] = None
 
 
 class ProviderOut(BaseModel):
@@ -123,6 +125,7 @@ class ProviderOut(BaseModel):
     default_model: str
     api_key_configured: bool
     is_local: bool
+    no_auth: bool
 
 
 class ApiKeyIn(BaseModel):

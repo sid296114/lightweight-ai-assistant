@@ -42,6 +42,7 @@
                 <div class="flex items-center gap-2">
                   <span class="truncate text-sm font-medium text-ink dark:text-gray-100">{{ p.name }}</span>
                   <span v-if="p.is_local" class="chip shrink-0 bg-primary/10 !px-1.5 text-[10px] text-primary">本地</span>
+                  <span v-else-if="p.no_auth" class="chip shrink-0 bg-warning/10 !px-1.5 text-[10px] text-warning">免鉴权</span>
                   <span
                     class="shrink-0 text-[10px]"
                     :class="p.api_key_configured ? 'text-success' : 'text-warning'"
@@ -129,11 +130,15 @@
                 <label class="mb-1 block text-xs text-ink-2 dark:text-gray-300">默认模型（可选）</label>
                 <input v-model="form.defaultModel" class="input" placeholder="不填则使用模型列表第一项" />
               </div>
-              <div class="flex items-center justify-end">
-                <button type="button" class="btn-primary !px-4 !py-2 text-xs" :disabled="saving" @click="saveProvider">
-                  {{ saving ? '添加中…' : '保存服务商' }}
-                </button>
-              </div>
+                <div class="flex items-center justify-between pt-1">
+                  <label class="flex cursor-pointer items-center gap-2 text-xs text-ink-2 dark:text-gray-300">
+                    <input v-model="form.noAuth" type="checkbox" class="h-3.5 w-3.5 accent-primary" />
+                    该服务无需 API Key（自部署推理，如魔搭 / 私有 vLLM 等）
+                  </label>
+                  <button type="button" class="btn-primary !px-4 !py-2 text-xs" :disabled="saving" @click="saveProvider">
+                    {{ saving ? '添加中…' : '保存服务商' }}
+                  </button>
+                </div>
             </div>
           </div>
         </div>
@@ -260,7 +265,7 @@ const testResults = reactive({})
 const apiKeyTarget = ref(null)
 const apiKeyValue = ref('')
 
-const form = reactive({ name: '', baseUrl: '', models: '', defaultModel: '' })
+const form = reactive({ name: '', baseUrl: '', models: '', defaultModel: '', noAuth: false })
 
 async function saveProvider() {
   const name = form.name.trim()
@@ -276,11 +281,13 @@ async function saveProvider() {
       base_url: baseUrl,
       models: form.models.split(',').map((s) => s.trim()).filter(Boolean),
       default_model: form.defaultModel.trim(),
+      no_auth: form.noAuth,
     })
     form.name = ''
     form.baseUrl = ''
     form.models = ''
     form.defaultModel = ''
+    form.noAuth = false
     adding.value = false
     toast('服务商已添加')
   } catch (e) {

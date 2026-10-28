@@ -72,6 +72,7 @@ def _public(provider: dict) -> dict:
         "default_model": provider.get("default_model", ""),
         "api_key_configured": bool(provider.get("api_key", "")),
         "is_local": is_local_url(provider["base_url"]),
+        "no_auth": bool(provider.get("no_auth", False)),
     }
 
 
@@ -93,7 +94,9 @@ def get_provider_public(provider_id: str) -> dict | None:
     return _public(p) if p else None
 
 
-def create_provider(name: str, base_url: str, models: list[str], default_model: str = "") -> dict:
+def create_provider(
+    name: str, base_url: str, models: list[str], default_model: str = "", no_auth: bool = False
+) -> dict:
     with _lock:
         providers = _load()
         provider = {
@@ -103,6 +106,7 @@ def create_provider(name: str, base_url: str, models: list[str], default_model: 
             "api_key": "",
             "models": [m.strip() for m in models if m.strip()],
             "default_model": default_model.strip(),
+            "no_auth": bool(no_auth),
         }
         providers.append(provider)
         _save(providers)
@@ -115,6 +119,7 @@ def update_provider(
     base_url: str | None = None,
     models: list[str] | None = None,
     default_model: str | None = None,
+    no_auth: bool | None = None,
 ) -> dict | None:
     with _lock:
         providers = _load()
@@ -129,6 +134,8 @@ def update_provider(
                 p["models"] = [m.strip() for m in models if m.strip()]
             if default_model is not None:
                 p["default_model"] = default_model.strip()
+            if no_auth is not None:
+                p["no_auth"] = bool(no_auth)
             _save(providers)
             return _public(p)
         return None
