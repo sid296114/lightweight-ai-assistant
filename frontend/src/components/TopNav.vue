@@ -1,5 +1,9 @@
 <template>
-  <header class="sticky top-0 z-40 flex h-14 items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur dark:border-dark-border dark:bg-dark-bg/80">
+  <header
+    :class="isHome
+      ? 'sticky top-0 z-40 flex h-14 items-center justify-between px-4 bg-transparent'
+      : 'sticky top-0 z-40 flex h-14 items-center justify-between border-b border-gray-100 bg-white/80 px-4 backdrop-blur dark:border-dark-border dark:bg-dark-bg/80'"
+  >
     <div class="flex items-center gap-6">
       <!-- Logo -->
       <RouterLink to="/" class="flex items-center gap-2 shrink-0">
@@ -102,6 +106,9 @@ const menus = [
 
 // 对话页：沉浸式顶栏（隐藏导航菜单，首页/关于入口在左侧栏头像下拉）
 const isChat = computed(() => route.path === '/chat')
+
+// 首页：顶栏透明，浮于浅蓝渐变背景之上
+const isHome = computed(() => route.path === '/')
 
 // 首页：顶栏只保留"首页"一项；其余页面显示全部菜单
 const visibleMenus = computed(() => {

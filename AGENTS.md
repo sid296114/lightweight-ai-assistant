@@ -62,7 +62,7 @@ copy .env.example .env                                # 首次：填写数据库
 - **任意 OpenAI 兼容服务 + 本地模型**统一管理：`backend/providers.json`（gitignore，内含各平台 API Key，仅存后端；列表接口只返回 `api_key_configured`，永不回传明文）。
 - 服务商接口：`GET/POST /api/providers`、`PATCH/DELETE /api/providers/{id}`、`POST /api/providers/{id}/api-key`（空串清除 Key）。
 - 对话：`POST /api/chat/stream` 的 ChatRequest 含 `provider_id`；未传时回退 `.env` 的 LLM_* 全局配置（Mock 兜底）。云端服务商未配 Key → SSE `error` 事件提示去设置页配置；本地地址（127.0.0.1/localhost）免 Key。
-- 预置两个服务商：DeepSeek（云端）、本地 Ollama（http://127.0.0.1:11434/v1）。
+- 预置三个服务商：DeepSeek（云端）、本地微调模型 MiniMind-768（`http://127.0.0.1:8001/v1`）、本地 Ollama（http://127.0.0.1:11434/v1）。
 - 前端入口：对话页输入框左侧模型选择器（未选显示 +、选中亮蓝显示模型名）；设置页「大模型设置」横条负责服务商增删改、API Key 添加与测试调用；「模型参数」横条调温度等。
 
 后端接口冒烟测试位于 `backend/smoke_test.py`，改动后端后应跑通 16 项断言。

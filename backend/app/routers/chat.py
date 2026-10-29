@@ -170,14 +170,17 @@ def chat_stream(
         if file_text is None:
             raise HTTPException(status_code=400, detail="文档不存在或已过期，请重新上传")
 
-    messages = build_messages(payload.content, history, file_text)
-
     # 解析所选大模型服务商（各类 OpenAI 兼容接口 + 本地模型）
     provider = None
     if payload.provider_id:
         provider = get_provider(payload.provider_id)
         if provider is None:
             raise HTTPException(status_code=400, detail="所选服务商不存在，请到设置中重新选择")
+
+    # 优先使用服务商配置的人设（system_prompt），未配置则回退默认助手人设
+    system_prompt = (provider or {}).get("system_prompt") or None
+    messages = build_messages(payload.content, history, file_text, system_prompt=system_prompt)
+
     model_name = session.model_name or (provider or {}).get("default_model") or None
     temperature = session.temperature
 

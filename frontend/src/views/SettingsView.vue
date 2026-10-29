@@ -77,6 +77,14 @@
                 <button
                   type="button"
                   class="btn-ghost !px-2.5 text-xs text-ink-2 hover:text-primary dark:text-gray-300"
+                  title="编辑系统提示词 / 人设"
+                  @click="openSystemPrompt(p)"
+                >
+                  人设
+                </button>
+                <button
+                  type="button"
+                  class="btn-ghost !px-2.5 text-xs text-ink-2 hover:text-primary dark:text-gray-300"
                   title="用默认模型测试调用"
                   :disabled="testing === p.id"
                   @click="testProvider(p)"
@@ -129,6 +137,10 @@
               <div>
                 <label class="mb-1 block text-xs text-ink-2 dark:text-gray-300">默认模型（可选）</label>
                 <input v-model="form.defaultModel" class="input" placeholder="不填则使用模型列表第一项" />
+              </div>
+              <div>
+                <label class="mb-1 block text-xs text-ink-2 dark:text-gray-300">系统提示词 / 人设（可选，留空用默认助手人设）</label>
+                <textarea v-model="form.systemPrompt" class="input min-h-[80px]" placeholder="例如：你是一个欢乐幽默的聊天伙伴…"></textarea>
               </div>
                 <div class="flex items-center justify-between pt-1">
                   <label class="flex cursor-pointer items-center gap-2 text-xs text-ink-2 dark:text-gray-300">
@@ -233,6 +245,24 @@
         placeholder="粘贴 API Key（留空则清除已存 Key）"
       />
     </BaseModal>
+
+    <!-- 系统提示词 / 人设弹窗 -->
+    <BaseModal
+      :show="systemPromptTarget !== null"
+      title="系统提示词 / 人设"
+      confirm-text="保存"
+      @close="systemPromptTarget = null"
+      @confirm="saveSystemPrompt"
+    >
+      <p class="mb-3 text-sm text-ink-2 dark:text-gray-300">
+        为「{{ systemPromptTarget?.name }}」设置人设（留空则使用默认助手人设）。
+      </p>
+      <textarea
+        v-model="systemPromptValue"
+        class="input min-h-[120px]"
+        placeholder="例如：你是一个欢乐幽默的聊天伙伴…"
+      ></textarea>
+    </BaseModal>
   </div>
 </template>
 
@@ -264,8 +294,10 @@ const testing = ref('')
 const testResults = reactive({})
 const apiKeyTarget = ref(null)
 const apiKeyValue = ref('')
+const systemPromptTarget = ref(null)
+const systemPromptValue = ref('')
 
-const form = reactive({ name: '', baseUrl: '', models: '', defaultModel: '', noAuth: false })
+const form = reactive({ name: '', baseUrl: '', models: '', defaultModel: '', noAuth: false, systemPrompt: '' })
 
 async function saveProvider() {
   const name = form.name.trim()
@@ -282,12 +314,14 @@ async function saveProvider() {
       models: form.models.split(',').map((s) => s.trim()).filter(Boolean),
       default_model: form.defaultModel.trim(),
       no_auth: form.noAuth,
+      system_prompt: form.systemPrompt.trim(),
     })
     form.name = ''
     form.baseUrl = ''
     form.models = ''
     form.defaultModel = ''
     form.noAuth = false
+    form.systemPrompt = ''
     adding.value = false
     toast('服务商已添加')
   } catch (e) {
@@ -309,6 +343,23 @@ async function saveApiKey() {
   try {
     await providersStore.saveApiKey(p.id, apiKeyValue.value.trim())
     toast(apiKeyValue.value.trim() ? 'API Key 已保存' : 'API Key 已清除')
+  } catch (e) {
+    toast(e.message, 'error')
+  }
+}
+
+function openSystemPrompt(p) {
+  systemPromptTarget.value = p
+  systemPromptValue.value = p.system_prompt || ''
+}
+
+async function saveSystemPrompt() {
+  const p = systemPromptTarget.value
+  systemPromptTarget.value = null
+  if (!p) return
+  try {
+    await providersStore.update(p.id, { system_prompt: systemPromptValue.value.trim() })
+    toast('人设已保存')
   } catch (e) {
     toast(e.message, 'error')
   }

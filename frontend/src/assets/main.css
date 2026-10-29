@@ -10,9 +10,33 @@ body,
 }
 
 body {
-  @apply bg-app-bg text-ink dark:bg-dark-bg dark:text-gray-100 antialiased;
+  @apply text-ink antialiased dark:text-gray-100;
   font-size: 14px;
   line-height: 1.6;
+  /* 浅色默认：浅蓝渐变 + 细网格（对齐 DeepSeek 首页风格，全站统一） */
+  background-color: #fafbfd;
+  background-image:
+    radial-gradient(ellipse 75% 45% at 50% -8%, rgba(100, 149, 237, 0.1), transparent 70%),
+    linear-gradient(rgba(100, 149, 237, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 149, 237, 0.055) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    44px 44px,
+    44px 44px;
+  background-attachment: fixed;
+}
+
+/* 深色模式：暗蓝底 + 暗色细网格 + 顶部光晕，与浅色模式视觉协调 */
+html.dark body {
+  background-color: #111827;
+  background-image:
+    radial-gradient(ellipse 75% 45% at 50% -8%, rgba(100, 149, 237, 0.08), transparent 70%),
+    linear-gradient(rgba(148, 163, 184, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.055) 1px, transparent 1px);
+  background-size:
+    100% 100%,
+    44px 44px,
+    44px 44px;
 }
 
 /* 统一轻量滚动条 */

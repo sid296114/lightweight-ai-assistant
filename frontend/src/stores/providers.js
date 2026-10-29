@@ -14,7 +14,7 @@ export const useProvidersStore = defineStore('providers', {
       this.loaded = true
       return this.providers
     },
-    ensure() {
+    async ensure() {
       if (!this.loaded) return this.fetch()
       return this.providers
     },

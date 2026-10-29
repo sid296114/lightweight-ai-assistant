@@ -22,6 +22,7 @@ def create_provider(payload: ProviderCreate, user: User = Depends(get_current_us
         models=payload.models,
         default_model=payload.default_model,
         no_auth=payload.no_auth,
+        system_prompt=payload.system_prompt,
     )
 
 
@@ -38,6 +39,7 @@ def update_provider(
         models=payload.models,
         default_model=payload.default_model,
         no_auth=payload.no_auth,
+        system_prompt=payload.system_prompt,
     )
     if updated is None:
         raise HTTPException(status_code=404, detail="服务商不存在")

@@ -107,6 +107,7 @@ class ProviderCreate(BaseModel):
     models: list[str] = Field(default_factory=list)
     default_model: str = Field("", max_length=100)
     no_auth: bool = Field(False, description="该服务无需 API Key（自部署推理，如魔搭/私有 vLLM 等）")
+    system_prompt: str = Field("", max_length=4000, description="系统提示词 / 人设，留空则使用默认助手人设")
 
 
 class ProviderUpdate(BaseModel):
@@ -115,6 +116,7 @@ class ProviderUpdate(BaseModel):
     models: Optional[list[str]] = None
     default_model: Optional[str] = Field(None, max_length=100)
     no_auth: Optional[bool] = None
+    system_prompt: Optional[str] = Field(None, max_length=4000)
 
 
 class ProviderOut(BaseModel):
@@ -126,6 +128,7 @@ class ProviderOut(BaseModel):
     api_key_configured: bool
     is_local: bool
     no_auth: bool
+    system_prompt: str
 
 
 class ApiKeyIn(BaseModel):

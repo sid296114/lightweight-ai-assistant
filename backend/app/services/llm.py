@@ -22,9 +22,18 @@ SYSTEM_PROMPT = (
 )
 
 
-def build_messages(user_content: str, history: list[dict], file_text: str | None) -> list[dict]:
-    """构造发送给模型的 messages。file_text 作为上下文注入。"""
-    messages: list[dict] = [{"role": "system", "content": SYSTEM_PROMPT}]
+def build_messages(
+    user_content: str,
+    history: list[dict],
+    file_text: str | None,
+    system_prompt: str | None = None,
+) -> list[dict]:
+    """构造发送给模型的 messages。file_text 作为上下文注入。
+
+    system_prompt：服务商配置的人设；为空时回退到全局默认 SYSTEM_PROMPT。
+    """
+    persona = (system_prompt or "").strip() or SYSTEM_PROMPT
+    messages: list[dict] = [{"role": "system", "content": persona}]
     if file_text:
         messages.append(
             {

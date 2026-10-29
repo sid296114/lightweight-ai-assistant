@@ -32,8 +32,11 @@ Thumbs.db
 
 # ---------- pip / 工具临时残留（勿提交） ----------
 pip-unpack-*/
+pip-uninstall-*/
 /tmp*
 /6t5c_atr
 /_th7v1so
 /a1qb9f3w
 /o1cez6r8
+/4fs81pmg
+/fk76onfa

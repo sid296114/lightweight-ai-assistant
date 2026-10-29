@@ -197,7 +197,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import { uploadFile } from '@/api'
 import BaseModal from '@/components/BaseModal.vue'
@@ -208,6 +208,7 @@ import { useChatStore } from '@/stores/chat'
 import { copyText, toast } from '@/utils/toast'
 
 const chat = useChatStore()
+const route = useRoute()
 const router = useRouter()
 
 const draft = ref('')
@@ -347,5 +348,17 @@ function copyMsg(content) {
 onMounted(() => {
   chat.fetchSessions().catch(() => {})
   chat.scrollToBottom()
+
+  // 支持首页输入框带问题跳转：/chat?q=xxx&deep=1
+  const q = route.query.q
+  if (q) {
+    if (route.query.deep === '1') {
+      chat.params.temperature = 0.3
+      toast('深度思考模式已开启（温度 0.3）')
+    }
+    chat.sendMessage(String(q))
+    // 清理 query，避免刷新页面重复发送
+    router.replace({ query: {} })
+  }
 })
 </script>
